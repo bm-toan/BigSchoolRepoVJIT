@@ -11,7 +11,7 @@
                 "dbo.Categories",
                 c => new
                     {
-                        Id = c.Int(nullable: false, identity: true),
+                        Id = c.Byte(nullable: false),
                         Name = c.String(nullable: false, maxLength: 255),
                     })
                 .PrimaryKey(t => t.Id);
@@ -25,21 +25,20 @@
                         Place = c.String(nullable: false, maxLength: 255),
                         DateTime = c.DateTime(nullable: false),
                         CategoryId = c.Byte(nullable: false),
-                        Category_Id = c.Int(),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.Categories", t => t.Category_Id)
+                .ForeignKey("dbo.Categories", t => t.CategoryId, cascadeDelete: true)
                 .ForeignKey("dbo.AspNetUsers", t => t.LecturerId, cascadeDelete: true)
                 .Index(t => t.LecturerId)
-                .Index(t => t.Category_Id);
+                .Index(t => t.CategoryId);
             
         }
         
         public override void Down()
         {
             DropForeignKey("dbo.Courses", "LecturerId", "dbo.AspNetUsers");
-            DropForeignKey("dbo.Courses", "Category_Id", "dbo.Categories");
-            DropIndex("dbo.Courses", new[] { "Category_Id" });
+            DropForeignKey("dbo.Courses", "CategoryId", "dbo.Categories");
+            DropIndex("dbo.Courses", new[] { "CategoryId" });
             DropIndex("dbo.Courses", new[] { "LecturerId" });
             DropTable("dbo.Courses");
             DropTable("dbo.Categories");
